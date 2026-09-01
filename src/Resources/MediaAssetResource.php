@@ -6,6 +6,7 @@ namespace Liberu\Genealogy\Media\Filament\Resources;
 
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Pages\PageRegistration;
@@ -13,6 +14,8 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Liberu\Genealogy\Media\Actions\DeleteMediaAsset;
 use Liberu\Genealogy\Media\Filament\Resources\MediaAssetResource\Pages\CreateMediaAsset;
 use Liberu\Genealogy\Media\Filament\Resources\MediaAssetResource\Pages\EditMediaAsset;
 use Liberu\Genealogy\Media\Filament\Resources\MediaAssetResource\Pages\ListMediaAssets;
@@ -24,18 +27,15 @@ final class MediaAssetResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Genealogy';
+    protected static string|\UnitEnum|null $navigationGroup = 'Data & Media';
 
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
+            FileUpload::make('upload')->storeFiles(false)->nullable(),
             TextInput::make('name')->required()->maxLength(255),
             Select::make('kind')->options(array_combine(MediaAsset::KINDS, MediaAsset::KINDS))->required(),
-            Select::make('status')->options([
-                'draft' => 'Draft',
-                'active' => 'Active',
-                'completed' => 'Completed',
-            ])->required(),
+            Select::make('status')->options(array_combine(MediaAsset::STATUSES, MediaAsset::STATUSES))->required(),
             TextInput::make('storage_disk')->maxLength(100)->nullable(),
             TextInput::make('storage_path')->maxLength(2000)->nullable(),
             TextInput::make('mime_type')->maxLength(255)->nullable(),
@@ -65,7 +65,7 @@ final class MediaAssetResource extends Resource
             TextColumn::make('created_at')->dateTime()->sortable(),
         ])->recordActions([
             EditAction::make(),
-            DeleteAction::make(),
+            DeleteAction::make()->action(fn (Model $record): mixed => app(DeleteMediaAsset::class)->execute($record)),
         ]);
     }
 
