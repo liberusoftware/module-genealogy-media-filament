@@ -2,10 +2,19 @@
   "name": "genealogy-media-filament",
   "display_name": "Genealogy Media filament",
   "description": "One-to-one filament adapter for Genealogy Media.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "category": "presentation",
- "provider": "Liberu\\Genealogy\\Media\\Filament\\MediaFilamentServiceProvider",
-  "presentation": {"filament": {"admin": ["Liberu\\Genealogy\\Media\\Filament\\MediaFilamentPlugin"], "app": ["Liberu\\Genealogy\\Media\\Filament\\MediaFilamentPlugin"]}},
+  "provider": "Liberu\\Genealogy\\Media\\Filament\\MediaFilamentServiceProvider",
+  "presentation": {
+    "filament": {
+      "admin": [
+        "Liberu\\Genealogy\\Media\\Filament\\MediaFilamentPlugin"
+      ],
+      "app": [
+        "Liberu\\Genealogy\\Media\\Filament\\MediaFilamentPlugin"
+      ]
+    }
+  },
   "requires": {
     "php": "^8.5",
     "laravel": "^13.0",
